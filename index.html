@@ -1,0 +1,53 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Viewer</title>
+</head>
+
+<body>
+  <h1>Email Viewer</h1>
+
+  <div>
+    <h2>All Emails</h2>
+    <ul id="allEmailsList"></ul>
+  </div>
+
+  <div>
+    <h2>Phishing Emails</h2>
+    <ul id="phishingEmailsList"></ul>
+  </div>
+
+  <div>
+    <h2>Non-Phishing Emails</h2>
+    <ul id="nonPhishingEmailsList"></ul>
+  </div>
+
+  <script>
+    async function fetchData(endpoint, listId) {
+      try {
+        const response = await fetch(`http://localhost:3000/${endpoint}`);
+        const data = await response.json();
+        const list = document.getElementById(listId);
+
+        if (data.length === 0) {
+          list.innerHTML = '<li>No emails available.</li>';
+        } else {
+          list.innerHTML = data.map(email => `<li>${email.body}</li>`).join('');
+        }
+      } catch (error) {
+        console.error(`Error fetching ${endpoint}:`, error);
+      }
+    }
+
+    // Fetch data on page load
+    fetchData('emails', 'allEmailsList');
+    fetchData('phishing-emails', 'phishingEmailsList');
+    fetchData('non-phishing-emails', 'nonPhishingEmailsList');
+  </script>
+</body>
+
+</html>
